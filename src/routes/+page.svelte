@@ -1,6 +1,10 @@
 <script>
   import '../app.css'
   import emojis from './emojis'
+  import Paused from '$lib/Paused.svelte'
+  import Start from '../lib/Start.svelte'
+  import Won from '../lib/Won.svelte'
+  import Lost from '../lib/Lost.svelte'
 
   const shuffle = xs => xs.sort(() => Math.random() - 0.5)
 
@@ -79,19 +83,16 @@
 <svelte:window on:keydown={pauseGame} />
 
 <main>
-  {#if state === 'start'}
-    <h1>Matching Game</h1>
-    <button on:click={() => (state = 'playing')}>Play</button>
-  {/if}
+  <Start bind:state />
+  
+  <Paused bind:state />
+  
+  <Won bind:state />
+
+  <Lost bind:state />
 
   {#if state === 'playing'}
     <h1 class="timer" class:pulse={time <= 10}>{time}</h1>
-
-    <div class="matches">
-      {#each matches as card}
-        <div>{card}</div>
-      {/each}
-    </div>
 
     <div class="cards">
       {#each grid as card, cardIndex}
@@ -108,20 +109,12 @@
         </button>
       {/each}
     </div>
-  {/if}
-  
-  {#if state === 'paused'}
-    <h1>Game paused</h1>
-  {/if}
-  
-  {#if state === 'won'}
-    <h1>You Won! 🎉</h1>
-    <button on:click={() => (state = 'playing')}>Play Again</button>
-  {/if}
 
-  {#if state === 'lost'}
-    <h1>You Lost! 💩</h1>
-    <button on:click={() => (state = 'playing')}>Play Again</button>
+    <div class="matches">
+      {#each matches as card}
+        <div>{card}</div>
+      {/each}
+    </div>
   {/if}
 </main>
 
