@@ -1,76 +1,51 @@
 <script>
-  import { emoji } from './emoji'
+  import emojis from './emoji'
+  import {shuffle} from './utils'
 
-  let state = 'start'
-  let size = 20
-  let grid = createGrid()
-  let maxMatches = grid.length / 2
-  let selected = []
-  let matches = []
-  let timerId = null
-  let time = 20
-
-  function startGameTimer() {
-    function countdown() {
-      state !== 'paused' && (time -= 1)
-    }
-
+  const startGameTimer = () => {
+    const countdown = () => state !== 'paused' && (time -= 1)
     timerId = setInterval(countdown, 1000)
   }
 
-  function createGrid() {
+  const createGrid = () => {
     let cards = new Set()
     let maxSize = size / 2
 
     while (cards.size < maxSize) {
-      const randomIndex = Math.floor(Math.random() * emoji.length)
-      cards.add(emoji[randomIndex])
+      const randomIndex = Math.floor(Math.random() * emojis.length)
+      cards.add(emojis[randomIndex])
     }
 
     return shuffle([...cards, ...cards])
   }
 
-  function shuffle(arr) {
-    return arr.sort(() => Math.random() - 0.5)
-  }
+  const selectCard = idx => (selected = [...selected, idx])
 
-  function selectCard(cardIndex) {
-    selected = selected.concat(cardIndex)
-  }
+  const matchCards = () => {
+    const [ first, second ] = selected
 
-  function matchCards() {
-    const [first, second] = selected
+    grid[first] === grid[second] && (matches = [...matches, grid[first]])
 
-    if (grid[first] === grid[second]) {
-      matches = matches.concat(grid[first])
-    }
     setTimeout(() => (selected = []), 300)
   }
 
-  function gameWon() {
+  const gameWon = () => {
     state = 'won'
     resetGame()
   }
 
-  function gameLost() {
+  const gameLost = () => {
     state = 'lost'
     resetGame()
   }
 
-  function pauseGame(evt) {
-    if (evt.key === 'Escape') {
-      switch (state) {
-        case 'playing':
-          state = 'paused'
-          break
-        case 'paused':
-          state = 'playing'
-          break
-      }
-    }
+  const pauseGame = evt => {
+    if (evt.key !== 'Escape') return   
+    if (state === 'playing') return state = 'paused'
+    if (state === 'paused') return state = 'playing'
   }
 
-  function resetGame() {
+  const resetGame = () => {
     timerId && clearInterval(timerId)
     grid = createGrid()
     maxMatches = grid.length / 2
@@ -80,15 +55,23 @@
     time = 60
   }
 
+  let state = 'start'
+  let size = 20
+  let grid = createGrid()
+  let maxMatches = grid.length / 2
+  let selected = []
+  let matches = []
+  let timerId = null
+  let time = 60
+
+  // Reactively manage state
   $: selected.length === 2 && matchCards()
 
   $: maxMatches === matches.length && gameWon()
 
   $: time === 0 && gameLost()
 
-  $: if (state === 'playing') {
-    !timerId && startGameTimer()
-  }
+  $: state === 'playing' && !timerId && startGameTimer()
 </script>
 
 <svelte:window on:keydown={pauseGame} />
