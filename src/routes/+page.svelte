@@ -100,8 +100,8 @@
         <button
           class="card"
           class:selected={isSelected}
-          class:flip={isSelected | isMatched}
-          disabled={isSelected | isMatched}
+          class:flip={isSelected || isMatched}
+          disabled={isSelected || isMatched}
           on:click={() => selectCard(cardIndex)}
         >
           <div class="back" class:match={isMatched}>{card}</div>
