@@ -19,7 +19,8 @@ body {
 	height: 100%;
 }
 
-body {
+main {
+	min-height: 100dvh;
 	display: grid;
 	place-content: center;
 	padding: 2rem;
