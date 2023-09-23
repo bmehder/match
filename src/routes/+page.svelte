@@ -1,6 +1,6 @@
 <script>
   import emojis from './emoji'
-  import {shuffle} from './utils'
+  import { shuffle } from '$lib/utils'
 
   const startGameTimer = () => {
     const countdown = () => state !== 'paused' && (time -= 1)
@@ -22,7 +22,7 @@
   const selectCard = idx => (selected = [...selected, idx])
 
   const matchCards = () => {
-    const [ first, second ] = selected
+    const [first, second] = selected
 
     grid[first] === grid[second] && (matches = [...matches, grid[first]])
 
@@ -40,9 +40,9 @@
   }
 
   const pauseGame = evt => {
-    if (evt.key !== 'Escape') return   
-    if (state === 'playing') return state = 'paused'
-    if (state === 'paused') return state = 'playing'
+    if (evt.key !== 'Escape') return
+    if (state === 'playing') return (state = 'paused')
+    if (state === 'paused') return (state = 'playing')
   }
 
   const resetGame = () => {
