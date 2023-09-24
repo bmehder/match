@@ -4,7 +4,10 @@
   export let matches
   export let selected
   export let grid
-  export let selectCard
+
+  function selectCard(x) {
+    selected = [...selected, x]
+  }
 </script>
 
 {#if state === 'playing'}

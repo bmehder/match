@@ -2,10 +2,10 @@
   import '../app.css'
   import emojis from './emojis'
   import Paused from '$lib/Paused.svelte'
-  import Start from '../lib/Start.svelte'
-  import Won from '../lib/Won.svelte'
-  import Lost from '../lib/Lost.svelte'
-  import Playing from '../lib/Playing.svelte'
+  import Start from '$lib/Start.svelte'
+  import Won from '$lib/Won.svelte'
+  import Lost from '$lib/Lost.svelte'
+  import Playing from '$lib/Playing.svelte'
 
   const shuffle = xs => xs.sort(() => Math.random() - 0.5)
 
@@ -32,11 +32,8 @@
   }
 
   function startGameTimer() {
-    timerId = setInterval(() => state !== 'paused' && (time -= 1), 1000)
-  }
-
-  function selectCard(x) {
-    selected = [...selected, x]
+    const countdown = () => state !== 'paused' && (time -= 1)
+    timerId = setInterval(countdown, 1000)
   }
 
   function matchCards() {
@@ -55,11 +52,6 @@
   function gameLost() {
     state = 'lost'
     resetGame()
-  }
-
-  function pauseGame(evt) {
-    if (evt.key !== 'Escape') return
-    return (state = state === 'playing' ? 'paused' : 'playing')
   }
 
   function resetGame() {
@@ -81,8 +73,6 @@
   $: state === 'playing' && !timerId && startGameTimer()
 </script>
 
-<svelte:window on:keydown={pauseGame} />
-
 <main>
   <Start bind:state />
   
@@ -92,5 +82,5 @@
 
   <Lost bind:state />
 
-  <Playing bind:state {time} {matches} {selected} {grid} {selectCard} />
+  <Playing bind:state {time} {matches} bind:selected {grid}  />
 </main>
